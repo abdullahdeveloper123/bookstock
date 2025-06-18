@@ -529,12 +529,11 @@
     function handleLogin(event) {
       event.preventDefault();
       
-      const formData = new FormData(event.target);
-      const loginData = {
-        email: formData.get('email'),
-        password: formData.get('password'),
-        remember: formData.get('remember') === 'on'
-      };
+      const formData = new FormData(document.getElementById('loginForm'));
+      const loginData = {};
+      formData.forEach((key,value) => {
+        loginData[key]=value
+      });
 
       // Hide any previous error messages
       const errorMessage = document.getElementById('errorMessage');
@@ -551,15 +550,15 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify(loginData)
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         if (data.success) {
           // Success - redirect to home or dashboard
-          window.location.href = data.redirect_url || '/';
+          window.location.href = data.redirect_url || 'home/';
         } else {
           // Show error message
           showError(data.message || 'Invalid credentials. Please try again.');

@@ -10,10 +10,10 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 import requests
-import bcrypt
+from django.contrib.auth.decorators import login_required
 
 # /////////////////////////////////////////////////////////////////////////Home///////////////////////////////////////////////////////////////////////
-
+@login_required(login_url='login')
 def home(request):
       quotes = cache.get('quote')
       page = Paginator(Book.objects.all(), 5)    
@@ -132,7 +132,7 @@ def login(request):
         password = data.get('password')
 
         try:
-            user = User.objects.filter(email=email)
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
             return JsonResponse({'objective': 'User not found'}, status=404)
 
